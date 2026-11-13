@@ -1,0 +1,9 @@
+{:paths ["kit"]
+ :tasks
+ {:requires ([conform])
+  help    {:doc "How this kit works" :override-builtin true :task (conform/help)}
+  run     {:doc "Runs YOUR program: one JSON document on stdin, one on stdout" :override-builtin true
+           ;; Change this one line to start your own program, in any language.
+           :task (shell "python3 run.py")}
+  conform {:doc "Runs every case in cases/ through `bb run` and says what fails"
+           :task (System/exit (conform/main *command-line-args*))}}}
