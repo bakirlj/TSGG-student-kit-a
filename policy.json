@@ -1,4 +1,4 @@
 {
-  "blur_min_sharpness": 100.0,
+  "blur_min_sharpness": 20.0,
   "glare_max_bright_share": 0.05
 }
