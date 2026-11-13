@@ -11,5 +11,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install numpy==1.26.4 opencv-python-headless==4.11.0.86
+      - run: pip install -r requirements.txt
+
       - run: bb conform
