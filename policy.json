@@ -1,4 +1,7 @@
 {
-  "blur_min_sharpness": 20.0,
+  "blur_min_sharpness": 200.0,
+  "blur_resize_width": 640, 
+  "blur_roi_width": 0.7,
+  "blur_roi_height": 0.8,
   "glare_max_bright_share": 0.05
 }
