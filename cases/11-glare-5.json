@@ -1,0 +1,5 @@
+{"name": "11-glare-5",
+ "why": "a medium glare spot in the centre: total white stays under 5 %, but the largest patch is over 2 %",
+ "rules": ["R2"],
+ "input": {"frame": "frames/glare-5.png"},
+ "expect": {"code": "glare"}}
