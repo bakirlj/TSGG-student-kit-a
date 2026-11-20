@@ -1,0 +1,5 @@
+{"name": "08-glare-4",
+ "why": "a hotspot with a lens streak is glare (synthetic)",
+ "rules": ["R2"],
+ "input": {"frame": "frames/glare-4.png"},
+ "expect": {"code": "glare"}}

@@ -1,0 +1,5 @@
+{"name": "07-glare-3",
+ "why": "a wide, softer hotspot is glare (synthetic)",
+ "rules": ["R2"],
+ "input": {"frame": "frames/glare-3.png"},
+ "expect": {"code": "glare"}}
