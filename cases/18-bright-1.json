@@ -1,0 +1,5 @@
+{"name": "18-bright-1",
+ "why": "a nearly white picture (synthetic: overexposed ok-2) is bright, not glare",
+ "rules": ["R4"],
+ "input": {"frame": "frames/bright-1.png"},
+ "expect": {"code": "bright"}}
