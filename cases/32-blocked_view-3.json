@@ -1,0 +1,5 @@
+{"name": "32-blocked_view-3",
+ "why": "synthetic: real screenshot shifted 25 % to the right, the right side of the scoring area is out of view",
+ "rules": ["R5"],
+ "input": {"frame": "frames/blocked_view-3.png"},
+ "expect": {"code": "blocked_view"}}

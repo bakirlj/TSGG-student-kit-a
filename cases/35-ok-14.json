@@ -1,0 +1,5 @@
+{"name": "35-ok-14",
+ "why": "synthetic: real screenshot shifted 25 % down; a dark strip reaches the number ring, but the whole scoring area is still visible",
+ "rules": ["R5"],
+ "input": {"frame": "frames/ok-14.png"},
+ "expect": {"code": null}}

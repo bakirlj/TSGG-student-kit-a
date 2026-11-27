@@ -1,0 +1,5 @@
+{"name": "30-blocked_view-1",
+ "why": "real screenshot: the camera has moved, the lower part of the oval shows the dark cabinet instead of the board",
+ "rules": ["R5"],
+ "input": {"frame": "frames/blocked_view-1.png"},
+ "expect": {"code": "blocked_view"}}

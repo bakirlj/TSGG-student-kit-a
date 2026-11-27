@@ -41,19 +41,23 @@ def check_blur(gray, policy):
     return {"sharpness": round(sharpness, 1)}
 
 
-def check_glare(gray, policy):
-    h, w = gray.shape
+def make_roi(gray, policy, scale=1.0):
     # Region of interest: the oval around the scoring area, as fractions of the picture (policy "roi")
-    # Only pixels inside it are measured. Without "roi" in the policy, the whole picture is used
+    # Only pixels inside it are measured. Without "roi" in the policy, the whole picture is used.
+    # scale < 1 makes the same oval smaller around the same centre (0.8 = about the double ring)
+    h, w = gray.shape
     roi_cfg = policy.get("roi")
-    if roi_cfg:
-        roi = np.zeros((h, w), np.uint8)
-        center = (round(roi_cfg["cx"] * w), round(roi_cfg["cy"] * h))
-        axes = (round(roi_cfg["rx"] * w), round(roi_cfg["ry"] * h))
-        cv2.ellipse(roi, center, axes, 0, 0, 360, 1, -1)
-        roi = roi.astype(bool)
-    else:
-        roi = np.ones((h, w), bool)
+    if not roi_cfg:
+        return np.ones((h, w), bool)
+    roi = np.zeros((h, w), np.uint8)
+    center = (round(roi_cfg["cx"] * w), round(roi_cfg["cy"] * h))
+    axes = (round(roi_cfg["rx"] * scale * w), round(roi_cfg["ry"] * scale * h))
+    cv2.ellipse(roi, center, axes, 0, 0, 360, 1, -1)
+    return roi.astype(bool)
+
+
+def check_glare(gray, policy):
+    roi = make_roi(gray, policy)
     roi_size = int(roi.sum())
 
     white = (gray >= policy["glare_white_level"]) & roi  # white pixels inside the oval only
@@ -76,6 +80,18 @@ def check_exposure(gray, policy):
     return {"mean_brightness": round(float(gray.mean()), 1)}
 
 
+def check_blocked(gray, policy):
+    # A moved camera shows a dark area (wood / cabinet around the board) where the board should be.
+    # Only the scoring area counts: a smaller oval, about up to the double ring (blocked_roi_scale),
+    # so dark in the outer number ring after a small move is not a fault.
+    roi = make_roi(gray, policy, policy["blocked_roi_scale"])
+    dark = (gray <= policy["blocked_black_level"]) & roi # almost black pixels inside the scoring area
+    n, labels, stats, _ = cv2.connectedComponentsWithStats(dark.astype(np.uint8), connectivity=8)
+    biggest = int(stats[1:, cv2.CC_STAT_AREA].max()) if n > 1 else 0
+    return {"largest_dark_share": round(biggest / int(roi.sum()), 4)}
+
+
+
 request = json.load(sys.stdin)
 data, policy = request["input"], request["policy"]
 
@@ -87,10 +103,12 @@ gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 blur = check_blur(gray, policy)
 glare = check_glare(gray, policy)
 exposure = check_exposure(gray, policy)
+blocked = check_blocked(gray, policy)
 
 # Decide. Whole-picture faults first: a black picture has no edges, so it would also look "blurry";
 # a white picture is one huge white patch, so it would also look like "glare".
-# Then glare (a white patch can also make the picture look soft), then blur.
+# Then glare (a white patch can also make the picture look soft), then blocked view (a dark area
+# has no edges either), then blur.
 # Only the largest white patch decides glare: on real cameras the board's white segments are
 # saturated too, so the total white share (bright_share) is high on normal pictures. It stays in args.
 if exposure["mean_brightness"] <= policy["dark_max_mean"]:
@@ -99,11 +117,13 @@ elif exposure["mean_brightness"] >= policy["bright_min_mean"]:
     code = "bright"
 elif glare["largest_blob_share"] >= policy["glare_min_blob_share"]:
     code = "glare"
+elif blocked["largest_dark_share"] >= policy["blocked_min_dark_share"]:
+    code = "blocked_view"
 elif blur["sharpness"] < policy["blur_min_sharpness"]:
     code = "blurry"
 else:
     code = None
 
-answer = {"code": code, "args": {**blur, **glare, **exposure}}
+answer = {"code": code, "args": {**blur, **glare, **exposure, **blocked}}
 
 json.dump(answer, sys.stdout)
