@@ -1,0 +1,5 @@
+{"name": "07-blurry-3",
+ "why": "ok-1 resized to 720p and blurred with GaussianBlur sigma 2; judged blurry by eye",
+ "rules": ["R1"],
+ "input": {"frame": "frames/blurry-3.png"},
+ "expect": {"code": "blurry"}}

@@ -1,7 +1,9 @@
 {
-  "blur_min_sharpness": 20.0,
-  "glare_white_level": 250,          
-  "glare_max_bright_share": 0.05,
-  "glare_min_blob_share": 0.01,
+  "blur_min_sharpness": 200.0,
+  "blur_resize_width": 640,
+  "blur_roi_width": 0.7,
+  "blur_roi_height": 0.8,
+  "glare_white_level": 250,
+  "glare_min_blob_share": 0.04,
   "roi": {"cx": 0.515, "cy": 0.545, "rx": 0.445, "ry": 0.355}
 }
