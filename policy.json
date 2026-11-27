@@ -5,5 +5,7 @@
   "blur_roi_height": 0.8,
   "glare_white_level": 250,
   "glare_min_blob_share": 0.04,
+  "dark_max_mean": 25,
+  "bright_min_mean": 200,
   "roi": {"cx": 0.515, "cy": 0.545, "rx": 0.445, "ry": 0.355}
 }

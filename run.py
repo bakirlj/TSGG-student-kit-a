@@ -71,6 +71,11 @@ def check_glare(gray, policy):
             "largest_blob_share": round(largest_blob_share, 4)}
 
 
+def check_exposure(gray, policy):
+    # Average brightness of the whole picture: 0 = black, 255 = white
+    return {"mean_brightness": round(float(gray.mean()), 1)}
+
+
 request = json.load(sys.stdin)
 data, policy = request["input"], request["policy"]
 
@@ -81,17 +86,24 @@ assert img is not None, "Couldn't find any image, check the file name and folder
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 blur = check_blur(gray, policy)
 glare = check_glare(gray, policy)
+exposure = check_exposure(gray, policy)
 
-# Decide: glare first (a white patch can also make the picture look soft), then blur.
+# Decide. Whole-picture faults first: a black picture has no edges, so it would also look "blurry";
+# a white picture is one huge white patch, so it would also look like "glare".
+# Then glare (a white patch can also make the picture look soft), then blur.
 # Only the largest white patch decides glare: on real cameras the board's white segments are
 # saturated too, so the total white share (bright_share) is high on normal pictures. It stays in args.
-if glare["largest_blob_share"] >= policy["glare_min_blob_share"]:
+if exposure["mean_brightness"] <= policy["dark_max_mean"]:
+    code = "dark"
+elif exposure["mean_brightness"] >= policy["bright_min_mean"]:
+    code = "bright"
+elif glare["largest_blob_share"] >= policy["glare_min_blob_share"]:
     code = "glare"
 elif blur["sharpness"] < policy["blur_min_sharpness"]:
     code = "blurry"
 else:
     code = None
 
-answer = {"code": code, "args": {**blur, **glare}}
+answer = {"code": code, "args": {**blur, **glare, **exposure}}
 
 json.dump(answer, sys.stdout)
