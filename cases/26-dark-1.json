@@ -1,0 +1,5 @@
+{"name": "26-dark-1",
+ "why": "a nearly black picture (synthetic: ok-1 at 15 % brightness) is dark, not blurry",
+ "rules": ["R3"],
+ "input": {"frame": "frames/dark-1.png"},
+ "expect": {"code": "dark"}}

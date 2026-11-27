@@ -1,0 +1,5 @@
+{"name": "20-ok-7",
+ "why": "ok-2 resized to 720p and blurred with GaussianBlur sigma 1; judged OK by eye",
+ "rules": ["R1"],
+ "input": {"frame": "frames/ok-7.png"},
+ "expect": {"code": null}}

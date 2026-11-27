@@ -1,0 +1,5 @@
+{"name": "29-bright-2",
+ "why": "a washed-out picture (synthetic: overexposed ok-1, mean about 210) is bright",
+ "rules": ["R4"],
+ "input": {"frame": "frames/bright-2.png"},
+ "expect": {"code": "bright"}}
