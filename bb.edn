@@ -4,6 +4,7 @@
   help    {:doc "How this kit works" :override-builtin true :task (conform/help)}
   run     {:doc "Runs YOUR program: one JSON document on stdin, one on stdout" :override-builtin true
            ;; Change this one line to start your own program, in any language.
-           :task (shell "python3 run.py")}
+           ;; Windows has `python`, Linux CI has `python3`. Activate .venv first so the pinned libraries are used.
+           :task (shell (if (.startsWith (System/getProperty "os.name") "Windows") "python run.py" "python3 run.py"))}
   conform {:doc "Runs every case in cases/ through `bb run` and says what fails"
            :task (System/exit (conform/main *command-line-args*))}}}
