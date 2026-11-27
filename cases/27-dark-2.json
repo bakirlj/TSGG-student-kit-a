@@ -1,0 +1,5 @@
+{"name": "27-dark-2",
+ "why": "a very dim picture (synthetic: ok-2 at 30 % brightness, mean about 18) is dark",
+ "rules": ["R3"],
+ "input": {"frame": "frames/dark-2.png"},
+ "expect": {"code": "dark"}}
