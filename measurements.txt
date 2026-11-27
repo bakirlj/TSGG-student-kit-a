@@ -1,3 +1,11 @@
+Measured 2026-11-27 16:18 with policy.json:
+  blur_min_sharpness = 200.0
+  blur_resize_width = 640
+  glare_white_level = 250
+  glare_min_blob_share = 0.04
+  roi = {"cx": 0.515, "cy": 0.545, "rx": 0.445, "ry": 0.355}
+If cases, policy.json or run.py change, run measure.py again to update this file.
+
 case          expected  got     match  blur.sharpness  blur.sharpness limit  glare.bright_share  glare.largest_blob_share  glare.largest_blob_share limit
 ------------  --------  ------  -----  --------------  --------------------  ------------------  ------------------------  ------------------------------
 01-ok-1       ok        ok      yes            2128.0                 200.0              0.0000                    0.0000                            0.04

@@ -14,6 +14,7 @@ import json
 import os
 import subprocess
 import sys
+from datetime import datetime
 
 # Which policy threshold belongs to which measured number, shown side by side.
 # When a new check is added (e.g. dark/bright), add its number and threshold here.
@@ -109,8 +110,13 @@ def main():
 
     wrong = sum(r["match"] != "yes" for r in rows)
     summary = f"{len(rows)} cases, {len(rows) - wrong} as expected, {wrong} not."
+    # Header: when this was measured and with which settings, so an outdated file is easy to spot
+    header = [f"Measured {datetime.now():%Y-%m-%d %H:%M} with policy.json:",
+              *(f"  {key} = {json.dumps(value)}" for key, value in policy.items()),
+              "If cases, policy.json or run.py change, run measure.py again to update this file.",
+              ""]
     with open(OUT_TXT, "w", encoding="utf-8") as f:
-        f.write("\n".join(lines) + "\n\n" + summary + "\n")
+        f.write("\n".join(header + lines) + "\n\n" + summary + "\n")
 
     print("\n".join(lines))
     print(f"\n{summary} Saved to {OUT_TXT} (to read) and {OUT} (for Excel)")
