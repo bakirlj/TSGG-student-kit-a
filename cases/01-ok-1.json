@@ -1,0 +1,5 @@
+{"name": "01-ok-1",
+ "why": "a sharp picture of the board must not be flagged",
+ "rules": ["R1"],
+ "input": {"frame": "frames/ok-1.png"},
+ "expect": {"code": null}}

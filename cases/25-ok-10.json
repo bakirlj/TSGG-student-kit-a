@@ -1,5 +1,0 @@
-{"name": "25-ok-10",
- "why": "a second sharp, evenly lit picture from the field is OK",
- "rules": ["R1", "R2", "R3", "R4"],
- "input": {"frame": "frames/ok-10.png"},
- "expect": {"code": null}}

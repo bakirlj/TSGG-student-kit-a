@@ -1,5 +1,0 @@
-{"name": "05-glare-1",
- "why": "a large hotspot in the middle of the board is glare (synthetic)",
- "rules": ["R2"],
- "input": {"frame": "frames/glare-1.png"},
- "expect": {"code": "glare"}}

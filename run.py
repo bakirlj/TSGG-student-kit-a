@@ -8,6 +8,20 @@ import cv2
 import numpy as np
 
 
+def make_roi(h, w, policy):
+    """Region of interest: the oval around the scoring area, as fractions of the picture (policy "roi").
+    Returns a True/False grid of size h x w: True inside the oval. Shared by every check,
+    so they all look at the same part of the board. Without "roi" in the policy, the whole picture is used."""
+    roi_cfg = policy.get("roi")
+    if not roi_cfg:
+        return np.ones((h, w), bool)
+    roi = np.zeros((h, w), np.uint8)
+    center = (round(roi_cfg["cx"] * w), round(roi_cfg["cy"] * h))
+    axes = (round(roi_cfg["rx"] * w), round(roi_cfg["ry"] * h))
+    cv2.ellipse(roi, center, axes, 0, 0, 360, 1, -1)
+    return roi.astype(bool)
+
+
 def check_blur(gray, policy):
 
     # Resize picture. Make new widt and height. 640 x 360
@@ -17,14 +31,8 @@ def check_blur(gray, policy):
     small = cv2.resize(gray, (new_w, new_h), interpolation=cv2.INTER_AREA)
     # new w and h because resize takes width first, while shpae gives height first
 
-    # Oval mask around the centre, where the bullseye is supposed to be
-    mask = np.zeros((new_h, new_w), np.uint8) # makes all black picture same size as small
-    center = (new_w // 2, new_h // 2)
-    axes = (int(new_w * policy.get("blur_roi_width", 0.7) / 2),
-            int(new_h * policy.get("blur_roi_height", 0.8) / 2))
-    # drawing the mask
-    cv2.ellipse(mask, center, axes, 0, 0, 360, 255, -1)
-    inside = mask > 0 #True inside oval, false otherwise
+    # Oval mask around the scoring area (same oval as glare), made at the small size
+    inside = make_roi(new_h, new_w, policy) #True inside oval, false otherwise
 
     # the brightness that 1% of the pixels are darker than, and
     # the brightness that 99% are darker than
@@ -43,17 +51,8 @@ def check_blur(gray, policy):
 
 def check_glare(gray, policy):
     h, w = gray.shape
-    # Region of interest: the oval around the scoring area, as fractions of the picture (policy "roi")
-    # Only pixels inside it are measured. Without "roi" in the policy, the whole picture is used
-    roi_cfg = policy.get("roi")
-    if roi_cfg:
-        roi = np.zeros((h, w), np.uint8)
-        center = (round(roi_cfg["cx"] * w), round(roi_cfg["cy"] * h))
-        axes = (round(roi_cfg["rx"] * w), round(roi_cfg["ry"] * h))
-        cv2.ellipse(roi, center, axes, 0, 0, 360, 1, -1)
-        roi = roi.astype(bool)
-    else:
-        roi = np.ones((h, w), bool)
+    # Only pixels inside the oval are measured
+    roi = make_roi(h, w, policy)
     roi_size = int(roi.sum())
 
     white = (gray >= policy["glare_white_level"]) & roi  # white pixels inside the oval only
@@ -92,6 +91,7 @@ elif blur["sharpness"] < policy["blur_min_sharpness"]:
 else:
     code = None
 
-answer = {"code": code, "args": {**blur, **glare}}
+# Each check's numbers stay under its own name, so two checks can never overwrite each other's keys
+answer = {"code": code, "args": {"blur": blur, "glare": glare}}
 
 json.dump(answer, sys.stdout)

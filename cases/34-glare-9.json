@@ -1,0 +1,5 @@
+{"name": "34-glare-9",
+ "why": "known limit: a small glare spot (largest patch 1.8 % of the oval) is smaller than one saturated white board segment on real cameras (up to 2.7 %), so glare_min_blob_share 0.04 does not catch it; expected OK until glare is told apart by shape",
+ "rules": ["R2"],
+ "input": {"frame": "frames/glare-9.png"},
+ "expect": {"code": null}}

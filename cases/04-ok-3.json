@@ -1,5 +1,0 @@
-{"name": "04-ok-3",
- "why": "real venue picture, slightly soft but everything is visible",
- "rules": ["R1"],
- "input": {"frame": "frames/ok-3.png"},
- "expect": {"code": null}}
