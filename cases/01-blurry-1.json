@@ -1,0 +1,5 @@
+{"name": "01-blurry-1",
+ "why": "a picture named blurry-1 must be found blurry",
+ "rules": ["R1"],
+ "input": {"frame": "frames/blurry-1.png"},
+ "expect": {"code": "blurry"}}
